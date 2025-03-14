@@ -78,6 +78,8 @@ const ChangePasswordForm: React.FC = () => {
         }
     };
 
+    console.log(email);
+
     return (
         <Container maxWidth="sm" className={styles.container}>
             <Paper elevation={3} className={styles.card}>

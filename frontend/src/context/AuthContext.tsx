@@ -13,7 +13,6 @@ interface AuthContextType {
     user: User | null;
     email: string | null;
     loading: boolean;
-    login: (username: string, password: string) => Promise<void>;
     logout: () => void;
     setEmailInContext: (email: string) => void;
 }
@@ -52,29 +51,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         sessionStorage.setItem("email", email);
     };
 
-    const login = async (username: string, password: string) => {
-        try {
-            const response = await axios.post<{ token: string; email: string }>("auth/login", { username, password });
-            const { token, email: userEmail } = response.data;
-            localStorage.setItem("token", token);
-            sessionStorage.setItem("email", userEmail);
-            const decoded = jwtDecode<User>(token);
-            setUser({ ...decoded, token });
-            setEmail(userEmail);
-        } catch (error) {
-            console.error("Login failed:", error);
-        }
-    };
-
     const logout = () => {
-        localStorage.removeItem("token");
-        sessionStorage.removeItem("email");
         setUser(null);
         setEmail(null);
+        sessionStorage.removeItem("email");
     };
 
     return (
-        <AuthContext.Provider value={{ user, email, loading, login, logout, setEmailInContext }}>
+        <AuthContext.Provider value={{ user, email, loading, logout, setEmailInContext }}>
             {children}
         </AuthContext.Provider>
     );

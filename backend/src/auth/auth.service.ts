@@ -91,6 +91,7 @@ export class AuthService {
         if (access_token != undefined) {
 
             user.password = await argon2.hash(password);
+            user.resetPasswordToken = null;
 
             await this.userRepository.save(user);
             return user;

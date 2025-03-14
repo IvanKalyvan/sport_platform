@@ -1,22 +1,17 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { AuthContext } from '../../context/AuthContext';
+import React, {useState, useEffect, useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Spinner, Alert } from 'react-bootstrap';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import styles from './Home.module.css';
-
-interface AuthContextType {
-    logout: () => void;
-    email: string;
-}
+import {AuthContext} from "../../context/AuthContext";
 
 const Home: React.FC = () => {
     const navigate = useNavigate();
     const [message, setMessage] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const { logout, email } = useContext(AuthContext) as AuthContextType;
+    const { logout } = useContext(AuthContext);
 
     useEffect(() => {
         const checkAuthorization = async () => {
@@ -38,6 +33,7 @@ const Home: React.FC = () => {
         Cookies.remove('access_token');
         Cookies.remove('refresh_token');
         logout();
+
         navigate('/');
     };
 

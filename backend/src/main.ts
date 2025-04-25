@@ -2,16 +2,17 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app/app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import cookieParser from 'cookie-parser'
-import * as path from 'path';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 async function bootstrap() {
     const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-    app.setBaseViewsDir(path.join(__dirname, '..', 'views'));
     app.setViewEngine('hbs');
-    app.enableCors({credentials: true, origin: 'http://localhost:3000'});
+    app.enableCors({ credentials: true, origin: 'http://localhost:3000' });
     app.use(
         cors({
             origin: 'http://localhost:3000',

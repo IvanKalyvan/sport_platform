@@ -1,10 +1,11 @@
-import React, {useState, useEffect, useContext} from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button, Spinner, Alert } from 'react-bootstrap';
-import Cookies from 'js-cookie';
-import axios from 'axios';
-import styles from './Home.module.css';
-import {AuthContext} from "../../context/AuthContext";
+// noinspection JSAnnotator
+
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import * as S from "./Home.styles";
+import { AuthContext } from "../../context/AuthContext";
+import Header from "./Header";
 
 const Home: React.FC = () => {
     const navigate = useNavigate();
@@ -16,11 +17,11 @@ const Home: React.FC = () => {
     useEffect(() => {
         const checkAuthorization = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/home', { withCredentials: true });
+                const response = await axios.get("http://localhost:3001/home", { withCredentials: true });
                 setMessage(response.data.message);
             } catch (err) {
-                setError('Unauthorized, please log in.');
-                navigate('/login');
+                setError("Unauthorized, please log in.");
+                navigate("/login");
             } finally {
                 setLoading(false);
             }
@@ -30,71 +31,50 @@ const Home: React.FC = () => {
     }, [navigate]);
 
     const handleLogout = () => {
-        Cookies.remove('access_token');
-        Cookies.remove('refresh_token');
         logout();
-
-        navigate('/');
+        navigate("/");
     };
 
-    const handleResetPassword = async () => {
-        try {
-            navigate('/change-password');
-        } catch (err: any) {
-
-            if (err.response){
-
-                const errorMessages = err.response.data.message || [];
-
-                setError(errorMessages[0] || 'An error occurred');
-
-            }
-
-            else {
-
-                setError("An unexpected error occurred");
-
-            }
-        }
+    const handleResetPassword = () => {
+        navigate("/change-password");
     };
 
     return (
-        <div className={styles.homeContainer}>
-            {loading ? (
-                <div className="text-center">
-                    <Spinner animation="border" role="status" />
-                    <span className="ms-2">Loading...</span>
-                </div>
-            ) : (
-                <>
-                    {error && <Alert variant="danger">{error}</Alert>}
-                    <div className="d-flex justify-content-center">
-                        <div className={styles.card}>
-                            <h2 className={styles.cardTitle}>Welcome to Your Dashboard!</h2>
-                            <p className={styles.cardText}>
-                                {message || "Here is your personalized dashboard where you can manage your settings and profile."}
-                            </p>
-                            <div>
-                                <Button
-                                    variant="primary"
-                                    onClick={handleLogout}
-                                    className={styles.button}
-                                >
-                                    Logout
-                                </Button>
-                                <Button
-                                    variant="secondary"
-                                    onClick={handleResetPassword}
-                                    className={styles.button}
-                                >
-                                    Reset Password
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                </>
-            )}
-        </div>
+        <>
+
+            <Header />
+
+            <S.HomeContainer>
+
+                {loading ? (
+                    <S.SpinnerContainer>
+                        <S.Spinner/>
+                        <span className="ms-2">Loading...</span>
+                    </S.SpinnerContainer>
+                ) : (
+                    <>
+                        {error && <S.Alert>{error}</S.Alert>}
+                        <S.Card>
+                            <S.Card>
+                                <S.CardTitle>Welcome to Your Dashboard!</S.CardTitle>
+                                <p className={S.CardText}>
+                                    {message || "Here is your personalized dashboard where you can manage your settings and profile."}
+                                </p>
+
+                                <div className="d-flex gap-3 justify-content-center">
+                                    <S.Button variant="primary" onClick={handleLogout}>
+                                        Logout
+                                    </S.Button>
+                                    <S.Button variant="secondary" onClick={handleResetPassword}>
+                                        Reset Password
+                                    </S.Button>
+                                </div>
+                            </S.Card>
+                        </S.Card>
+                    </>
+                )}
+            </S.HomeContainer>
+        </>
     );
 };
 

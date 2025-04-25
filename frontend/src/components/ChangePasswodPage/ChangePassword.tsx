@@ -3,16 +3,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import axios from "axios";
-import {
-    Button,
-    TextField,
-    Container,
-    Paper,
-    Typography,
-    Box,
-    Alert,
-} from "@mui/material";
-import styles from "./ChangePassword.module.css";
+import * as S from "./ChangePassword.types"
 
 const ChangePasswordForm: React.FC = () => {
     const navigate = useNavigate();
@@ -78,84 +69,67 @@ const ChangePasswordForm: React.FC = () => {
         }
     };
 
-    console.log(email);
-
     return (
-        <Container maxWidth="sm" className={styles.container}>
-            <Paper elevation={3} className={styles.card}>
-                <Typography
-                    variant="h4"
-                    component="h2"
-                    align="center"
-                    className={styles.title}
-                >
-                    Change Password
-                </Typography>
+        <S.Container>
+            <S.Card>
+                <S.Title>Change Password</S.Title>
 
-                {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+                {errorMessage && <S.Error>{errorMessage}</S.Error>}
                 {successMessage && (
-                    <Alert severity="success">{successMessage}</Alert>
+                    <div className="text-green-600 text-sm">{successMessage}</div>
                 )}
-                {infoMessage && <Alert severity="info">{infoMessage}</Alert>}
+                {infoMessage && <div className="text-blue-600 text-sm">{infoMessage}</div>}
 
-                <form onSubmit={handleChangePassword} className={styles.form}>
+                <S.Form onSubmit={handleChangePassword}>
                     {!email && (
-                        <TextField
-                            label="Email"
-                            variant="outlined"
-                            fullWidth
-                            value={emailForReset}
-                            onChange={(e) => setEmailForReset(e.target.value)}
-                            margin="normal"
-                            required
-                        />
+                        <S.InputGroup>
+                            <S.InputGroupLabel>Email</S.InputGroupLabel>
+                            <S.Input
+                                type="email"
+                                value={emailForReset}
+                                onChange={(e) => setEmailForReset(e.target.value)}
+                                required
+                            />
+                        </S.InputGroup>
                     )}
 
-                    <TextField
-                        label="New Password"
-                        type="password"
-                        variant="outlined"
-                        fullWidth
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        margin="normal"
-                        required
-                    />
+                    <S.InputGroup>
+                        <S.InputGroupLabel>New Password</S.InputGroupLabel>
+                        <S.Input
+                            type="password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            required
+                        />
+                    </S.InputGroup>
 
-                    <TextField
-                        label="Confirm New Password"
-                        type="password"
-                        variant="outlined"
-                        fullWidth
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        margin="normal"
-                        required
-                    />
+                    <S.InputGroup>
+                        <S.InputGroupLabel>Confirm New Password</S.InputGroupLabel>
+                        <S.Input
+                            type="password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            required
+                        />
+                    </S.InputGroup>
 
-                    <Box textAlign="center">
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            type="submit"
-                            className={styles.button}
-                        >
+                    <div className="text-center">
+                        <S.Button>
                             Change Password
-                        </Button>
-                    </Box>
-                </form>
+                        </S.Button>
+                    </div>
+                </S.Form>
 
-                <Box mt={2} textAlign="center">
-                    <Button
+                <div className="mt-2 text-center">
+                    <S.FooterButton
                         onClick={() => navigate(email ? "/home" : "/login")}
-                        color="secondary"
-                        variant="outlined"
+                        className={S.FooterLink}
                     >
                         {email ? "Go Home" : "Go to Login"}
-                    </Button>
-                </Box>
-            </Paper>
-        </Container>
+                    </S.FooterButton>
+                </div>
+            </S.Card>
+        </S.Container>
     );
 };
 

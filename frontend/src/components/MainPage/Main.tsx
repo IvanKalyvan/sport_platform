@@ -1,16 +1,16 @@
 import React from "react";
 import Header from "./Header";
-import styles from "./Main.module.css";
+import * as S from "./Main.styles"
 
 const Main: React.FC = () => {
     return (
-        <div className={styles.wrapper}>
+        <S.Wrapper>
             <Header />
-            <main className={styles.container}>
+            <main className={S.Container}>
                 <h1>Welcome to Our Website</h1>
                 <p>Explore and enjoy our services.</p>
             </main>
-        </div>
+        </S.Wrapper>
     );
 };
 

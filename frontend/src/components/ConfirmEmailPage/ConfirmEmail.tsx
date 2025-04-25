@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import styles from "./ConfirmEmail.module.css";
+import * as S from "./ConfirmEmail.styles"
 
 const ConfirmEmail = () => {
     const [message, setMessage] = useState<string>("");
@@ -25,22 +25,22 @@ const ConfirmEmail = () => {
     };
 
     return (
-        <div className={styles.wrapper}>
-            <div className={`${styles.card} ${error ? styles.error : styles.success}`}>
+        <S.Wrapper>
+            <S.Card className={error ? S.Error : S.Success}>
                 <h1>{error ? "Error" : "Congratulations!"}</h1>
                 <p>{message}</p>
-                <div className={styles.buttons}>
-                    <button onClick={() => handleRedirect(false)} className={styles.backButton}>
+                <div className={S.Buttons}>
+                    <S.BackButton onClick={() => handleRedirect(false)}>
                         Go to Main Page
-                    </button>
+                    </S.BackButton>
                     {!error && (
-                        <button onClick={() => handleRedirect(true)} className={styles.loginButton}>
+                        <S.LoginButton onClick={() => handleRedirect(true)}>
                             Go to Login
-                        </button>
+                        </S.LoginButton>
                     )}
                 </div>
-            </div>
-        </div>
+            </S.Card>
+        </S.Wrapper>
     );
 };
 

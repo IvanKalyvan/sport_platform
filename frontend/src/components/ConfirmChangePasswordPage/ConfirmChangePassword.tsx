@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import styles from './ConfirmChangePassword.module.css';
+import * as S from "./ConfirmChangePassword.styles"
 
 const ConfirmationChangePassword: React.FC = () => {
     const [message, setMessage] = useState<string>('');
@@ -24,23 +24,23 @@ const ConfirmationChangePassword: React.FC = () => {
     };
 
     return (
-        <div className={styles.container}>
-            <div className={`${styles.alert} ${error ? styles.alertError : styles.alertSuccess}`}>
-                <h1>{error ? 'Error' : 'Success'}</h1>
-                <p>{message}</p>
-            </div>
-            <div className={styles.buttonsContainer}>
-                <button onClick={() => handleRedirect(false)} className={styles.buttonSecondary}>
+        <S.Container>
+            <S.Alert className={error ? S.AlertError : S.AlertSuccess}>
+                <S.AlertTitle>{error ? 'Error' : 'Success'}</S.AlertTitle>
+                <S.AlertText>{message}</S.AlertText>
+            </S.Alert>
+            <S.ButtonsContainer>
+                <S.ButtonSecondary onClick={() => handleRedirect(false)}>
                     Go to main page
-                </button>
+                </S.ButtonSecondary>
 
                 {!error && (
-                    <button onClick={() => handleRedirect(true)} className={styles.buttonPrimary}>
+                    <S.ButtonPrimary onClick={() => handleRedirect(true)}>
                         Go to login
-                    </button>
+                    </S.ButtonPrimary>
                 )}
-            </div>
-        </div>
+            </S.ButtonsContainer>
+        </S.Container>
     );
 };
 

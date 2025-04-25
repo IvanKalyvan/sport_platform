@@ -1,26 +1,40 @@
+// noinspection JSAnnotator
+
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { AuthContext } from "../../context/AuthContext";
-import styles from "./Login.module.css";
+import * as S from "./Login.styles";
+import { jwtDecode } from "jwt-decode";
 
 const Login: React.FC = () => {
+
     const navigate = useNavigate();
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [error, setError] = useState<string>("");
     const { setEmailInContext } = useContext(AuthContext);
+    const { setUserTypeInContext } = useContext(AuthContext);
 
     useEffect(() => {
         const token = Cookies.get("access_token");
         if (token) {
-            navigate("/home");
+            try {
+                const decodedToken: any = jwtDecode(token);
+                if (decodedToken && decodedToken.userType) {
+                    setUserTypeInContext(decodedToken.userType);
+                    navigate("/home");
+                }
+            } catch (e) {
+                console.error("Invalid token", e);
+            }
         }
     }, [navigate]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        console.log(setUserTypeInContext)
 
         try {
             const response = await axios.post(
@@ -31,22 +45,26 @@ const Login: React.FC = () => {
 
             if (response.status === 201) {
                 setEmailInContext(email);
-                navigate("/home");
+
+                const token = Cookies.get("access_token");
+                if (token) {
+                    try {
+                        const decodedToken: any = jwtDecode(token);
+                        if (decodedToken && decodedToken.userType) {
+                            setUserTypeInContext(decodedToken.userType);
+                            navigate("/home");
+                        }
+                    } catch (e) {
+                        console.error("Invalid token", e);
+                    }
+                }
             }
         } catch (err: any) {
-
-            if (err.response){
-
+            if (err.response) {
                 const errorMessages = err.response.data.message || [];
-
-                setError(String(errorMessages) || 'An error occurred');
-
-            }
-
-            else {
-
+                setError(String(errorMessages) || "An error occurred");
+            } else {
                 setError("An unexpected error occurred");
-
             }
         }
     };
@@ -59,48 +77,46 @@ const Login: React.FC = () => {
         navigate("/");
     };
 
-    console.log(error);
-
     return (
-        <div className={styles.wrapper}>
-            <div className={styles.card}>
-                <h2 className={styles.title}>Login</h2>
-                <form onSubmit={handleSubmit} className={styles.form}>
-                    <div className={styles.inputGroup}>
-                        <label htmlFor="email">Email</label>
-                        <input
+        <S.Wrapper>
+            <S.Card>
+                <S.Title>Login</S.Title>
+                <S.Form onSubmit={handleSubmit}>
+                    <S.InputGroup>
+                        <S.Label htmlFor="email">Email</S.Label>
+                        <S.Input
                             type="text"
                             id="email"
                             placeholder="Enter your email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
-                    </div>
-                    <div className={styles.inputGroup}>
-                        <label htmlFor="password">Password</label>
-                        <input
+                    </S.InputGroup>
+                    <S.InputGroup>
+                        <S.Label htmlFor="password">Password</S.Label>
+                        <S.Input
                             type="password"
                             id="password"
                             placeholder="Enter your password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
-                    </div>
-                    {error && <p className={styles.error}>{error}</p>}
-                    <button type="submit" className={styles.loginButton}>
+                    </S.InputGroup>
+                    {error && <S.Error>{error}</S.Error>}
+                    <S.LoginButton onClick={handleSubmit}>
                         Login
-                    </button>
-                </form>
-                <div className={styles.footer}>
-                    <button className={styles.forgotPassword} onClick={handleForgotPassword}>
+                    </S.LoginButton>
+                </S.Form>
+                <S.Footer>
+                    <S.ForgotPassword onClick={handleForgotPassword}>
                         Forgot password?
-                    </button>
-                    <button className={styles.goHome} onClick={handleGoHome}>
+                    </S.ForgotPassword>
+                    <S.GoHome onClick={handleGoHome}>
                         Back to Home
-                    </button>
-                </div>
-            </div>
-        </div>
+                    </S.GoHome>
+                </S.Footer>
+            </S.Card>
+        </S.Wrapper>
     );
 };
 
